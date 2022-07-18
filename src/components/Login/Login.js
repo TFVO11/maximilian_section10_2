@@ -1,8 +1,9 @@
-import React, { useState, useEffect, useReducer } from 'react';
+import React, { useState, useEffect, useReducer, useContext } from 'react';
 
 import Card from '../UI/Card/Card';
 import classes from './Login.module.css';
 import Button from '../UI/Button/Button';
+import AuthContext from '../../context/auth-context';
 
 const emailReducer = (state, action) => {
   if (action.type === 'USER_INPUT') {
@@ -37,6 +38,10 @@ const Login = (props) => {
 
   const { isValid: emailIsValid } = emailState;
   const { isValid: passwordIsValid } = passwordState;
+
+  const authCtx = useContext(AuthContext);
+
+
 //구조분해 할당으로 useEffect가 추가적으로 돌아가는 것을 막아준다.
 //이전의 값에 의해 한번더 cleanup이 진행이 되기 때문에 그래서 구조 분해 할당으로 isValid만 분해 할당해서 박아준다.
   useEffect(() => {
@@ -88,7 +93,7 @@ const Login = (props) => {
 
   const submitHandler = (event) => {
     event.preventDefault();
-    props.onLogin(emailState.value, passwordState.value);
+    authCtx.onLogin(emailState.value, passwordState.value);
   };
 
   return (
