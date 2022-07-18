@@ -3,14 +3,15 @@ import React, { useState, useEffect, useReducer, useContext } from 'react';
 import Card from '../UI/Card/Card';
 import classes from './Login.module.css';
 import Button from '../UI/Button/Button';
+import Input from '../UI/Input/Input';
 import AuthContext from '../../context/auth-context';
 
 const emailReducer = (state, action) => {
   if (action.type === 'USER_INPUT') {
-    return {value: action.val, isValid: action.val.includes('@')};
+    return { value: action.val, isValid: action.val.includes('@') };
   }
   if (action.type === 'INPUT_BLUR') {
-    return { value: state.value, isValid: state.value.includes('@')}
+    return { value: state.value, isValid: state.value.includes('@') }
   };
   return { value: '', isValid: false };
   //finaly return initial value
@@ -18,10 +19,10 @@ const emailReducer = (state, action) => {
 
 const passwordReducer = (state, action) => {
   if (action.type === 'USER_INPUT') {
-    return {value: action.val, isValid: action.val.trim().length > 6};
+    return { value: action.val, isValid: action.val.trim().length > 6 };
   }
   if (action.type === 'INPUT_BLUR') {
-    return { value: state.value, isValid: state.value.trim().length > 6}
+    return { value: state.value, isValid: state.value.trim().length > 6 }
   };
   return { value: '', isValid: false };
 };
@@ -33,8 +34,8 @@ const Login = (props) => {
   // const [passwordIsValid, setPasswordIsValid] = useState();
   const [formIsValid, setFormIsValid] = useState(false);
 
-  const [emailState, dispatchEmail] = useReducer(emailReducer, {value: '', isValid: null});
-  const [passwordState, dispatchPassword] = useReducer(passwordReducer, {value: '', isValid: null});
+  const [emailState, dispatchEmail] = useReducer(emailReducer, { value: '', isValid: null });
+  const [passwordState, dispatchPassword] = useReducer(passwordReducer, { value: '', isValid: null });
 
   const { isValid: emailIsValid } = emailState;
   const { isValid: passwordIsValid } = passwordState;
@@ -42,8 +43,8 @@ const Login = (props) => {
   const authCtx = useContext(AuthContext);
 
 
-//구조분해 할당으로 useEffect가 추가적으로 돌아가는 것을 막아준다.
-//이전의 값에 의해 한번더 cleanup이 진행이 되기 때문에 그래서 구조 분해 할당으로 isValid만 분해 할당해서 박아준다.
+  //구조분해 할당으로 useEffect가 추가적으로 돌아가는 것을 막아준다.
+  //이전의 값에 의해 한번더 cleanup이 진행이 되기 때문에 그래서 구조 분해 할당으로 isValid만 분해 할당해서 박아준다.
   useEffect(() => {
     console.log('EFFECT RUNNING');
 
@@ -67,7 +68,7 @@ const Login = (props) => {
   }, [emailIsValid, passwordIsValid]);
 
   const emailChangeHandler = (event) => {
-    dispatchEmail({type: 'USER_INPUT', val: event.target.value});
+    dispatchEmail({ type: 'USER_INPUT', val: event.target.value });
 
     // setFormIsValid(
     //   event.target.value.includes('@') && passwordState.isValid
@@ -75,7 +76,7 @@ const Login = (props) => {
   };
 
   const passwordChangeHandler = (event) => {
-    dispatchPassword({type: 'USER_INPUT', val: event.target.value});
+    dispatchPassword({ type: 'USER_INPUT', val: event.target.value });
 
     // setFormIsValid(
     //   emailState.isValid && event.target.value.trim().length > 6
@@ -84,11 +85,11 @@ const Login = (props) => {
 
   const validateEmailHandler = () => {
     // setEmailIsValid(emailState.isValid);
-    dispatchEmail({ type: 'INPUT_BLUR'});
+    dispatchEmail({ type: 'INPUT_BLUR' });
   };
 
   const validatePasswordHandler = () => {
-    dispatchPassword({type: 'INPUT_BLUR'});
+    dispatchPassword({ type: 'INPUT_BLUR' });
   };
 
   const submitHandler = (event) => {
@@ -99,33 +100,27 @@ const Login = (props) => {
   return (
     <Card className={classes.login}>
       <form onSubmit={submitHandler}>
+        <Input 
+        id="email" 
+        label="E-Mail" type="email" 
+        isValid={emailIsValid} 
+        value={emailState.value} 
+        onChange={emailChangeHandler} 
+        onBlur={validateEmailHandler}
+        />
         <div
-          className={`${classes.control} ${
-            emailState.isValid === false ? classes.invalid : ''
-          }`}
-        >
-          <label htmlFor="email">E-Mail</label>
-          <input
-            type="email"
-            id="email"
-            value={emailState.value}
-            onChange={emailChangeHandler}
-            onBlur={validateEmailHandler}
-          />
-        </div>
-        <div
-          className={`${classes.control} ${
-            passwordState.isValid === false ? classes.invalid : ''
-          }`}
+          className={`${classes.control} ${passwordState.isValid === false ? classes.invalid : ''
+            }`}
         >
           <label htmlFor="password">Password</label>
-          <input
-            type="password"
-            id="password"
-            value={passwordState.value}
-            onChange={passwordChangeHandler}
-            onBlur={validatePasswordHandler}
-          />
+          <Input 
+        id="password" 
+        label="Password" type="password" 
+        isValid={passwordIsValid} 
+        value={passwordState.value} 
+        onChange={passwordChangeHandler} 
+        onBlur={validatePasswordHandler}
+        />
         </div>
         <div className={classes.actions}>
           <Button type="submit" className={classes.btn} disabled={!formIsValid}>
